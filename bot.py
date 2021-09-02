@@ -6,7 +6,7 @@ from time import sleep
 from loguru import logger
 
 from api import Crypto
-from config import PARAMS, USER_AGENT
+from config import USER_AGENT, VK_ADMIN_TOKEN
 
 
 class Cryptocurrency:
@@ -30,15 +30,7 @@ class Cryptocurrency:
         sleep(1 / 3)
 
 
-def main():
-    logger.remove()
-    logger.add(
-        stderr,
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
-        colorize=True,
-    )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210902.2")
-    client = Crypto(PARAMS.strip(), USER_AGENT.strip())
+def run_bot(client: Crypto) -> None:
     cryptos = [
         Cryptocurrency(client, name, income)
         for name, income in (
@@ -63,7 +55,6 @@ def main():
         profile = client.get_profile()
         sleep(1)
         if profile:
-            balance = profile["balance"]
             income = profile["in_minute_mining"]
             if income == 0:
                 most_profitable = cryptos[0]
@@ -71,6 +62,7 @@ def main():
                 most_profitable = cryptos[1]
             else:
                 most_profitable = max(cryptos, key=lambda x: x.profit)
+            balance = profile["balance"]
             logger.info(
                 f"""Баланс: {balance}
 Кол-во крипты: {profile['sum']}
@@ -94,6 +86,17 @@ def main():
                         sleep(3)
             most_profitable.buy()
             sleep(1)
+
+
+def main() -> None:
+    logger.remove()
+    logger.add(
+        stderr,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
+        colorize=True,
+    )
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210902.3")
+    run_bot(Crypto(VK_ADMIN_TOKEN.strip(), USER_AGENT.strip()))
 
 
 if __name__ == "__main__":
