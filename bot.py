@@ -37,7 +37,7 @@ def main():
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
         colorize=True,
     )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210902.1")
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210902.2")
     client = Crypto(PARAMS.strip(), USER_AGENT.strip())
     cryptos = [
         Cryptocurrency(client, name, income)
@@ -52,6 +52,11 @@ def main():
             ("Polkadot", 50),
             ("USDCoin", 60),
             ("Solana", 80),
+            ("Uniswap", 110),
+            ("Chaincoin", 150),
+            ("Terra", 200),
+            ("Litecoin", 250),
+            ("Filecoin", 300),
         )
     ]
     while True:
