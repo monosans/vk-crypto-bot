@@ -86,7 +86,7 @@ def main():
                 )
                 sleep(minutes_to_wait * 60)
                 while True:
-                    balance = client.get_profile().get("balance", balance)
+                    balance = client.get_balance().get("balance", balance)
                     if balance >= price:
                         sleep(1)
                         break

@@ -48,6 +48,32 @@ class Crypto:
             {"id": self._MY_ID, "params": self._AUTHORIZATION},
         )
 
+    def transfer(self, amount: str, recipient_id: str) -> dict:
+        return self._req(
+            "1000",
+            "Transfer",
+            {
+                "params": self._AUTHORIZATION,
+                "id": self._MY_ID,
+                "recipient_id": recipient_id,
+                "amount": amount,
+            },
+        )
+
+    def buy_boost_x2(self) -> dict:
+        return self._req(
+            "1000",
+            "BuyBoostX2",
+            {"id": self._MY_ID, "params": self._AUTHORIZATION},
+        )
+
+    def buy_boost_x3(self) -> dict:
+        return self._req(
+            "1000",
+            "BuyBoostX3",
+            {"id": self._MY_ID, "params": self._AUTHORIZATION},
+        )
+
     def _req(self, port: str, endpoint: str, json: dict = None) -> dict:
         """Метод для отправки запросов серверу игры."""
         try:
