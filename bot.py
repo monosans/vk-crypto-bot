@@ -37,7 +37,7 @@ def main():
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
         colorize=True,
     )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210901")
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210902")
     client = Crypto(PARAMS.strip(), USER_AGENT.strip())
     cryptos = [
         Cryptocurrency(client, name, income)
@@ -57,7 +57,7 @@ def main():
     while True:
         most_profitable = max(cryptos, key=lambda x: x.profit)
         profile = client.get_profile()
-        sleep(1 / 3)
+        sleep(1)
         if profile:
             balance = profile["balance"]
             income = profile["in_minute_mining"]
@@ -78,12 +78,12 @@ def main():
                 while True:
                     balance = client.get_profile().get("balance", balance)
                     if balance >= price:
-                        sleep(1 / 3)
+                        sleep(1)
                         break
                     else:
                         sleep(3)
             most_profitable.buy()
-            sleep(1 / 3)
+            sleep(1)
 
 
 if __name__ == "__main__":

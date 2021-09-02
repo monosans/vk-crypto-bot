@@ -51,10 +51,15 @@ class Crypto:
     def _req(self, port: str, endpoint: str, json: dict = None) -> dict:
         """Метод для отправки запросов серверу игры."""
         try:
-            return self._s.post(
+            r = self._s.post(
                 f"https://baguette-game.com:{port}/{endpoint}", json=json
-            ).json()
+            )
         except Exception as e:
             logger.error(f"{endpoint}: {e}")
-            sleep(1)
+            sleep(3)
             return self._req(port, endpoint, json)
+        # Too many requests
+        if r.status_code == 429:
+            sleep(3)
+            return self._req(port, endpoint, json)
+        return r.json()
