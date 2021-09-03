@@ -6,6 +6,14 @@ from loguru import logger
 from requests import Session
 
 
+class IncorrectToken(Exception):
+    pass
+
+
+class IncorrectTokenType(Exception):
+    pass
+
+
 class Crypto:
     def __init__(self, vk_admin_token: str, user_agent: str) -> None:
         """
@@ -17,18 +25,19 @@ class Crypto:
         r = self._s.get(
             f"https://api.vk.com/method/apps.get?access_token={vk_admin_token}&v=5.131&app_id=7932067&platform=web"
         ).json()
-        try:
-            response = r["response"]
-        except KeyError:
-            raise Exception("Неверный токен.")
+        response = r.get("response")
+        if not response:
+            raise IncorrectToken("Неверный токен.")
         item = response["items"][0]
-        try:
-            webview_url = item["webview_url"]
-        except KeyError:
-            raise Exception("Токен неверного типа. Нужен VK Admin токен.")
-        origin, self._PARAMS = webview_url.split("/index.html?")
+        webview_url = item.get("webview_url")
+        if not webview_url:
+            raise IncorrectTokenType(
+                "Токен неверного типа. Нужен VK Admin токен."
+            )
+        origin, params = webview_url.split("/index.html?")
+        self._PARAMS = params
+        self._MY_ID = int(findall(r".*vk_user_id=(\d+)*", params)[0])
         self._s.headers.update({"Origin": origin, "Referer": f"{origin}/"})
-        self._MY_ID = int(findall(r".*vk_user_id=(\d+)*", self._PARAMS)[0])
 
     def get_profile(self) -> dict:
         return self._req(
