@@ -18,9 +18,12 @@ class Cryptocurrency:
         self.set_price_profit()
 
     def buy(self) -> None:
-        self._client.buy_upgrade_crypto(
+        r = self._client.buy_upgrade_crypto(
             "USD" if self.NAME == "USDCoin" else self.NAME
         )
+        if r["status"] == "Недостаточно средств":
+            sleep(uniform(1, 2))
+            return self.buy()
         sleep(uniform(1, 2))
         self.set_price_profit()
 
@@ -77,12 +80,6 @@ def run_bot(client: Crypto) -> None:
                 most_profitable.NAME,
             )
             sleep(minutes_to_wait * 60)
-            while True:
-                if client.get_balance()["balance"] >= price:
-                    sleep(uniform(1, 2))
-                    break
-                else:
-                    sleep(20)
         most_profitable.buy()
         sleep(uniform(0.66, 1.66))
 
@@ -94,7 +91,7 @@ def main() -> None:
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
         colorize=True,
     )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210903")
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210903.1")
     run_bot(Crypto(VK_ADMIN_TOKEN.strip(), USER_AGENT.strip()))
 
 
