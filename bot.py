@@ -19,12 +19,13 @@ class Cryptocurrency:
         self.set_price_profit()
 
     def buy(self) -> None:
-        r = self._client.buy_upgrade_crypto(
-            "USD" if self.NAME == "USDCoin" else self.NAME
-        )
-        if r["status"] == "Недостаточно средств":
+        while True:
+            r = self._client.buy_upgrade_crypto(
+                "USD" if self.NAME == "USDCoin" else self.NAME
+            )
+            if r["status"] == "Успешная покупка":
+                break
             sleep(uniform(3, 5))
-            return self.buy()
         sleep(uniform(1, 2))
         self.set_price_profit()
 
@@ -109,7 +110,7 @@ def main() -> None:
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
         colorize=True,
     )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210904.1")
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210904.2")
     if isinstance(VK_ADMIN_TOKEN, str):
         run_bot(Crypto(VK_ADMIN_TOKEN.strip(), USER_AGENT.strip()))
     elif isinstance(VK_ADMIN_TOKEN, (list, tuple, set)):
