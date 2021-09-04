@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from random import uniform
 from sys import stderr
+from threading import Thread
 from time import sleep
 
 from loguru import logger
@@ -22,7 +23,7 @@ class Cryptocurrency:
             "USD" if self.NAME == "USDCoin" else self.NAME
         )
         if r["status"] == "Недостаточно средств":
-            sleep(uniform(1, 2))
+            sleep(uniform(3, 5))
             return self.buy()
         sleep(uniform(1, 2))
         self.set_price_profit()
@@ -34,7 +35,7 @@ class Cryptocurrency:
         sleep(uniform(0.34, 0.5))
 
 
-def run_bot(client: Crypto) -> None:
+def run_bot(client: Crypto, account_number: int = None) -> None:
     cryptos = [
         Cryptocurrency(client, name, income)
         for name, income in (
@@ -69,24 +70,36 @@ def run_bot(client: Crypto) -> None:
         elif income == 1:
             most_profitable = cryptos[1]
         else:
-            most_profitable = max(cryptos, key=lambda x: x.profit)
+            most_profitable = max(cryptos, key=lambda crypto: crypto.profit)
         balance = profile["balance"]
-        logger.info(
-            f"""Баланс: {balance}
+
+        string = (
+            f"""Баланс: {balance:,}
+Кол-во крипты: {profile['sum']}
+Прибыль в минуту: {income}"""
+            if account_number is None
+            else f"""Аккаунт №{account_number}
+Баланс: {balance:,}
 Кол-во крипты: {profile['sum']}
 Прибыль в минуту: {income}"""
         )
+
+        logger.info(string)
         price = most_profitable.price
-        if balance < price:
-            minutes_to_wait = int((price - balance) / income)
+        if account_number is None and balance < price:
             logger.info(
-                "Жду {} минут, чтобы накопить на {}...",
-                minutes_to_wait,
-                most_profitable.NAME,
+                f"Коплю {price:,} баланса на {most_profitable.NAME}..."
             )
-            sleep(minutes_to_wait * 60)
         most_profitable.buy()
         sleep(uniform(0.66, 1.66))
+
+
+def run_multibot(tokens: set, user_agent: str) -> None:
+    for account_number, token in enumerate(tokens):
+        Thread(
+            target=run_bot,
+            args=(Crypto(token.strip(), user_agent), account_number),
+        ).start()
 
 
 def main() -> None:
@@ -96,8 +109,15 @@ def main() -> None:
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
         colorize=True,
     )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210904")
-    run_bot(Crypto(VK_ADMIN_TOKEN.strip(), USER_AGENT.strip()))
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210904.1")
+    if isinstance(VK_ADMIN_TOKEN, str):
+        run_bot(Crypto(VK_ADMIN_TOKEN.strip(), USER_AGENT.strip()))
+    elif isinstance(VK_ADMIN_TOKEN, (list, tuple, set)):
+        if len(VK_ADMIN_TOKEN) == 1:
+            for token in VK_ADMIN_TOKEN:
+                run_bot(Crypto(token.strip(), USER_AGENT.strip()))
+        else:
+            run_multibot(set(VK_ADMIN_TOKEN), USER_AGENT.strip())
 
 
 if __name__ == "__main__":
