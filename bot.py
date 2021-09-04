@@ -53,6 +53,11 @@ def run_bot(client: Crypto) -> None:
             ("Terra", 200),
             ("Litecoin", 250),
             ("Filecoin", 300),
+            ("Tron", 400),
+            ("Monero", 500),
+            ("Theta", 600),
+            ("Aave", 750),
+            ("Kusama", 1000),
         )
     ]
     while True:
@@ -91,7 +96,7 @@ def main() -> None:
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
         colorize=True,
     )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210903.1")
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210904")
     run_bot(Crypto(VK_ADMIN_TOKEN.strip(), USER_AGENT.strip()))
 
 
