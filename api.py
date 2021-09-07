@@ -23,7 +23,7 @@ class Crypto:
         self._s = Session()
         self._s.headers.update({"User-Agent": user_agent})
         r = self._s.get(
-            f"https://api.vk.com/method/apps.get?access_token={vk_admin_token}&v=5.131&app_id=7932067&platform=web"
+            f"https://api.vk.com/method/apps.get?access_token={vk_admin_token.split('access_token=')[-1].split('&expires_in')[0]}&v=5.131&app_id=7932067&platform=web"
         ).json()
         response = r.get("response")
         if not response:

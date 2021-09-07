@@ -25,7 +25,7 @@ class Cryptocurrency:
             )
             if r["status"] == "Успешная покупка":
                 break
-            sleep(uniform(3, 5))
+            sleep(uniform(15, 20))
         sleep(uniform(1, 2))
         self.set_price_profit()
 
@@ -110,7 +110,7 @@ def main() -> None:
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
         colorize=True,
     )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210904.2")
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210907")
     if isinstance(VK_ADMIN_TOKEN, str):
         run_bot(Crypto(VK_ADMIN_TOKEN.strip(), USER_AGENT.strip()))
     elif isinstance(VK_ADMIN_TOKEN, (list, tuple, set)):
