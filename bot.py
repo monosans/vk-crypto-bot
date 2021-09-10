@@ -108,10 +108,15 @@ def run_bot(client: Crypto, account_number: int = None) -> None:
 
         logger.info(string)
         price = most_profitable.price
-        if account_number is None and balance < price:
-            logger.info(
-                f"Коплю {price:,} баланса на {most_profitable.AMOUNT_NAME} (займёт примерно {int((price - balance) / income)} мин.)..."
+        if balance < price:
+            time_to_wait = int((price - balance) / income) or 1
+            string = (
+                f"Коплю {price:,} баланса на {most_profitable.AMOUNT_NAME} (займёт примерно {time_to_wait} мин.)"
+                if account_number is None
+                else f"""Аккаунт №{account_number} (id{client.MY_ID})
+Коплю {price:,} баланса на {most_profitable.AMOUNT_NAME} (займёт примерно {time_to_wait} мин.)"""
             )
+            logger.info(string)
         most_profitable.buy()
         sleep(uniform(0.66, 1.66))
 
@@ -134,7 +139,7 @@ def setup_logging() -> None:
 
 def main() -> None:
     setup_logging()
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210910.1")
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210910.2")
     if isinstance(VK_ADMIN_TOKEN, str):
         run_bot(Crypto(VK_ADMIN_TOKEN, USER_AGENT))
     elif isinstance(VK_ADMIN_TOKEN, (list, tuple, set)):
