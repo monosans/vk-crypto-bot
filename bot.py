@@ -41,25 +41,25 @@ def run_bot(client: Crypto, account_number: int = None) -> None:
         Cryptocurrency(client, name, income)
         for name, income in (
             ("Bitcoin", 1),
-            ("Ethereum", 5),
-            ("Cardano", 10),
-            ("BinanceCoin", 15),
-            ("Tether", 20),
-            ("XRP", 30),
-            ("Dogecoin", 40),
-            ("Polkadot", 50),
-            ("USDCoin", 60),
-            ("Solana", 80),
-            ("Uniswap", 110),
-            ("Chaincoin", 150),
-            ("Terra", 200),
-            ("Litecoin", 250),
-            ("Filecoin", 300),
-            ("Tron", 400),
-            ("Monero", 500),
-            ("Theta", 600),
-            ("Aave", 750),
-            ("Kusama", 1000),
+            ("Ethereum", 3),
+            ("Cardano", 5),
+            ("BinanceCoin", 10),
+            ("Tether", 15),
+            ("XRP", 23),
+            ("Dogecoin", 34),
+            ("Polkadot", 45),
+            ("USDCoin", 55),
+            ("Solana", 65),
+            ("Uniswap", 98),
+            ("Chaincoin", 125),
+            ("Terra", 160),
+            ("Litecoin", 225),
+            ("Filecoin", 267),
+            ("Tron", 340),
+            ("Monero", 450),
+            ("Theta", 540),
+            ("Aave", 677),
+            ("Kusama", 799),
         )
     ]
     while True:
@@ -110,7 +110,7 @@ def main() -> None:
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n<level>{message}</level>",
         colorize=True,
     )
-    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210907")
+    logger.info("github.com/monosans/vk-crypto-bot\nВерсия 20210910")
     if isinstance(VK_ADMIN_TOKEN, str):
         run_bot(Crypto(VK_ADMIN_TOKEN.strip(), USER_AGENT.strip()))
     elif isinstance(VK_ADMIN_TOKEN, (list, tuple, set)):
