@@ -21,9 +21,9 @@ class Crypto:
         user_agent (str): User agent браузера.
         """
         self._s = Session()
-        self._s.headers.update({"User-Agent": user_agent})
+        self._s.headers.update({"User-Agent": user_agent.strip()})
         r = self._s.get(
-            f"https://api.vk.com/method/apps.get?access_token={vk_admin_token.split('access_token=')[-1].split('&expires_in')[0]}&v=5.131&app_id=7932067&platform=web"
+            f"https://api.vk.com/method/apps.get?access_token={vk_admin_token.split('access_token=')[-1].split('&expires_in')[0].strip()}&v=5.131&app_id=7932067&platform=web"
         ).json()
         response = r.get("response")
         if not response:
@@ -36,16 +36,16 @@ class Crypto:
             )
         origin, params = webview_url.split("/index.html?")
         self._PARAMS = params
-        self._MY_ID = int(findall(r".*vk_user_id=(\d+)*", params)[0])
+        self.MY_ID = int(findall(r".*vk_user_id=(\d+)*", params)[0])
         self._s.headers.update({"Origin": origin, "Referer": f"{origin}/"})
 
     def get_profile(self) -> dict:
         return self._req(
-            "1000", "", {"id": self._MY_ID, "params": self._PARAMS}
+            "1000", "", {"id": self.MY_ID, "params": self._PARAMS}
         )
 
     def get_balance(self) -> dict:
-        return self._req("1000", "GetUserBalance", {"id": self._MY_ID})
+        return self._req("1000", "GetUserBalance", {"id": self.MY_ID})
 
     def get_top_100_users(self) -> dict:
         return self._req("1002", "GetTop100Users")
@@ -54,14 +54,14 @@ class Crypto:
         return self._req(
             "1000",
             f"BuyUpgrade{crypto}",
-            {"id": self._MY_ID, "params": self._PARAMS},
+            {"id": self.MY_ID, "params": self._PARAMS},
         )
 
     def get_amount_buy_upgrade_crypto(self, crypto: str) -> dict:
         return self._req(
             "1000",
             f"GetAmountBuyUpgrade{crypto}",
-            {"id": self._MY_ID, "params": self._PARAMS},
+            {"id": self.MY_ID, "params": self._PARAMS},
         )
 
     def transfer(self, amount: str, recipient_id: str) -> dict:
@@ -70,7 +70,7 @@ class Crypto:
             "Transfer",
             {
                 "params": self._PARAMS,
-                "id": self._MY_ID,
+                "id": self.MY_ID,
                 "recipient_id": recipient_id,
                 "amount": amount,
             },
@@ -78,12 +78,12 @@ class Crypto:
 
     def buy_boost_x2(self) -> dict:
         return self._req(
-            "1000", "BuyBoostX2", {"id": self._MY_ID, "params": self._PARAMS}
+            "1000", "BuyBoostX2", {"id": self.MY_ID, "params": self._PARAMS}
         )
 
     def buy_boost_x3(self) -> dict:
         return self._req(
-            "1000", "BuyBoostX3", {"id": self._MY_ID, "params": self._PARAMS}
+            "1000", "BuyBoostX3", {"id": self.MY_ID, "params": self._PARAMS}
         )
 
     def _req(self, port: str, endpoint: str, json: dict = None) -> dict:
