@@ -111,10 +111,10 @@ def run_bot(client: Crypto, account_number: int = None) -> None:
         if balance < price:
             time_to_wait = int((price - balance) / income) or 1
             string = (
-                f"Коплю {price:,} баланса на {most_profitable.AMOUNT_NAME} (~ {time_to_wait} мин.)"
+                f"Коплю {price:,} баланса на {most_profitable.AMOUNT_NAME} (~{time_to_wait} мин.)"
                 if account_number is None
                 else f"""Аккаунт №{account_number} (id{client.MY_ID})
-Коплю {price:,} баланса на {most_profitable.AMOUNT_NAME} (~ {time_to_wait} мин.)"""
+Коплю {price:,} баланса на {most_profitable.AMOUNT_NAME} (~{time_to_wait} мин.)"""
             )
             logger.info(string)
         most_profitable.buy()
